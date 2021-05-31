@@ -18,10 +18,10 @@ class CategoryController extends Controller
     public function index()
     {
         //
-        $categories = Category::all();
+        $categories =  Category::latest()->paginate(5);
 
         $response = ["message" =>'Categories Listed Successfully'];
-        return response($response, 200);
+        return response($categories, 200);
 
     }
 
@@ -63,8 +63,11 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = Category::findOrFail($id);
+
         $response = ["message" =>'Category Listed Successfully'];
-        return response($response, 200);
+        return response($category, 200);
+
+
     }
 
     /**
@@ -76,7 +79,23 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|min:10',
+            'image_url' => 'required|string',
+        ]);
+        if ($validator->fails())
+        {
+            return response(['errors'=>$validator->errors()->all()], 422);
+        }
+        $update = Category::find($id)->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'image_url' => $request->image_url,
+        ]);
+
+        $response = ["message" =>'Category Updated Successfully'];
+        return response($response, 200);
     }
 
     /**
@@ -87,6 +106,10 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = Category::findorFail($id);
+        $category->delete();
+
+        $response = ["message" =>'Category Deleted Successfully'];
+        return response($response, 200);
     }
 }
