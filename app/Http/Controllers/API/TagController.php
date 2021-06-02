@@ -6,10 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Models\Category;
+use App\Models\Tag;
 
-
-class CategoryController extends Controller
+class TagController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,12 +17,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
-        $categories =  Category::latest()->paginate(5);
+        $tags = Tag::latest()->paginate(5);
 
-        $response = ["message" =>'Categories Listed Successfully'];
-        return response($categories, 200);
-
+        $response = ["message" => 'Tag Listed Successfully'];
+        return response($tags, 200);
     }
 
     /**
@@ -35,24 +32,21 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|min:10',
-            'image_url' => 'required|string',
+            'name' => 'required|string|max:20',
+            // 'description' => 'required|string|min:10',
         ]);
         if ($validator->fails())
         {
             return response(['errors'=>$validator->errors()->all()], 422);
         }
-        $store = Category::create([
+        $store = Tag::create([
             'name' => $request->name,
             'slug' => Str::limit(Str::slug($request->name), '20', '') . '-' . random_int(0, 999999999),
-            'description' => $request->description,
-            'image_url' => $request->image_url,
+            // 'description' => $request->description,
         ]);
 
-        $response = ["message" =>'Category Created Successfully'];
+        $response = ["message" =>'Tag Created Successfully'];
         return response($response, 200);
-
     }
 
     /**
@@ -63,12 +57,10 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = Category::findOrFail($id);
+        $tag = Tag::findOrFail($id);
 
-        $response = ["message" =>'Category Listed Successfully'];
-        return response($category, 200);
-
-
+        $response = ["message" =>'Tag Listed Successfully'];
+        return response($tag, 200);
     }
 
     /**
@@ -82,20 +74,18 @@ class CategoryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'description' => 'required|string|min:10',
-            'image_url' => 'required|string',
+            // 'description' => 'required|string|min:10',
         ]);
         if ($validator->fails())
         {
             return response(['errors'=>$validator->errors()->all()], 422);
         }
-        $update = Category::find($id)->update([
+        $update = Tag::find($id)->update([
             'name' => $request->name,
-            'description' => $request->description,
-            'image_url' => $request->image_url,
+            // 'description' => $request->description,
         ]);
 
-        $response = ["message" =>'Category Updated Successfully'];
+        $response = ["message" =>'Tag Updated Successfully'];
         return response($response, 200);
     }
 
@@ -107,10 +97,10 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::findorFail($id);
-        $category->delete();
+        $tag = Tag::findorFail($id);
+        $tag->delete();
 
-        $response = ["message" =>'Category Deleted Successfully'];
+        $response = ["message" =>'Tag Deleted Successfully'];
         return response($response, 200);
     }
 }

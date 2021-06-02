@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\TagController;
 use App\Http\Controllers\API\Auth\AuthController;
 
 /*
@@ -46,5 +47,6 @@ Route::middleware('auth:api')->group(function () {
 // protected admin routes
 Route::group(['middleware' => ['auth:api','admin']], function() {
     Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('tags', TagController::class);
 });
 
